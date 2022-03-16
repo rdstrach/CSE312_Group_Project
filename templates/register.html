@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+</head>
+<body>
+<div class="acc_input">
+    <form method="POST" action="/login">
+        <div class="field">
+            <div class="control has-icons-left has-icons-right">
+                <input class="input" type="text" name="name" placeholder="Username">
+                <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                </span>
+            </div>
+        </div>
+        <div class="field">
+            <p class="control has-icons-left">
+                <input class="input" type="password" name="password" placeholder="Password">
+                <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                </span>
+            </p>
+        </div>
+        <div class="field">
+            <div class="file">
+                <label class="file-label">
+                    <input class="file-input" type="file" name="profile">
+                    <span class="file-cta">
+                        <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="file-label">
+                            Add a profile image
+                        </span>
+                    </span>
+                </label>
+            </div>
+        </div>
+        <div class="control">
+            <button class="button login">Register</button>
+        </div>
+    </form>
+    <br>
+    <a class="ref_link" href="/login">Already have an account? Click here to login.</a>
+</div>
+</body>
+</html>
