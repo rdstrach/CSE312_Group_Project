@@ -7,10 +7,12 @@ COPY . .
 
 RUN pip3 install -r requirements.txt
 
-EXPOSE 8000
+# Expose container port 5000 for local access
+EXPOSE 5000
 
-#ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.2.1/wait /wait
-#RUN chmod +x /wait
+# ref: Import solution from ufoscout that allows waiting
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.2.1/wait /wait
+RUN chmod +x /wait
 
-#CMD /wait && python server.py
-CMD python flask_server.py
+# /wait until database loads
+CMD /wait && python flask_server.py
