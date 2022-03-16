@@ -3,6 +3,11 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
+# Method to set up and return MongoDB database
+def db():
+    client = MongoClient('mongo', 27017)
+    db = client['server']
+    return db
 
 @app.route('/')
 def index():
