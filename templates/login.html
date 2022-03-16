@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+</head>
+<body>
+    <div class="acc_input">
+    <form method="POST" action="/login">
+        <div class="field">
+            <div class="control has-icons-left has-icons-right">
+                <input class="input" type="text" name="name" placeholder="Username">
+                <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                </span>
+            </div>
+        </div>
+        <div class="field">
+            <p class="control has-icons-left">
+                <input class="input" type="password" name="password" placeholder="Password">
+                <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                </span>
+            </p>
+        </div>
+        <div class="control">
+            <button class="button login">Login</button>
+        </div>
+    </form>
+    <br>
+    <a class="ref_link" href="/register">Don't have an account? Click here to create one.</a>
+</div>
+</body>
+</html>
