@@ -1,0 +1,17 @@
+@import "bulma.min.css";
+@import "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css";
+
+.acc_input {
+    margin: auto;
+    width: 25%;
+    padding-top: 15%;
+}
+
+.main {
+    padding: 1%;
+}
+
+.post-img {
+    max-height: 400px;
+    width: auto;
+}
