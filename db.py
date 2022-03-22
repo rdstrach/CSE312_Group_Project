@@ -18,7 +18,7 @@ id_query = {"field": "key"}
 """
 create_user(first_name,last_name,username,password,password_again)
 Add user data to database
-if successfull
+if successful 
 user account has been created;
 returns empty set; 
 else
