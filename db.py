@@ -19,9 +19,11 @@ id_query = {"field": "key"}
 create_user(first_name,last_name,username,password,password_again)
 Add user data to database
 if successfull
-returns empty set if userdata valid
+has been user account created;
+returns empty set; 
 else
-returns set of strings, with user error descriptions, no data added to database
+no data modified/added to database
+returns set of string(s), with user error descriptions, 
 """
 def create_user(first_name,last_name,username,password,password_again):
     data = dict()
