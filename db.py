@@ -17,8 +17,11 @@ id_query = {"field": "key"}
 
 """
 create_user(first_name,last_name,username,password,password_again)
-returns empty set if userdata valid and created
-returns set of strings, with user error description 
+Add user data to database
+if successfull
+returns empty set if userdata valid
+else
+returns set of strings, with user error descriptions, no data added to database
 """
 def create_user(first_name,last_name,username,password,password_again):
     data = dict()
@@ -47,9 +50,9 @@ def create_user(first_name,last_name,username,password,password_again):
 """
 def validate_registration_input(first_name, last_name, username, password, password_again)
 returns empty set if user data is valid
-returns set of strings, with user error description 
+returns set of strings, with user error descriptions
 
-No changes to database done here
+No changes to made to database in this function
 """
 
 def validate_registration_input(first_name, last_name, username, password, password_again):
@@ -77,10 +80,10 @@ def validate_registration_input(first_name, last_name, username, password, passw
 
 """
 def next_id()
-Is is uses users_id_collection to count id's; will increment and return id
-Called only for user_create()
-req1-note: undefined behaviour if this value is nonpositive
+Is is uses users_id_collecteion to count id's; will increment and return id
+Called only for user_creat()
 
+req1-note: undefined behaviour if this value is nonpositive
 req2-note: undefined behaviour if this value is nonpositive
 
 """
@@ -130,11 +133,12 @@ def login_validation(username, password):
 """
  def user_data(id)
     returns dictionary of all user data except password give the user id as integer
-    returns bool FALSE if id doesn't exist, nonpositive values will return false,
-     as long as next_id() begins at the value 1
+    returns bool FALSE if id doesn't exist, nonpositive values will return false
+     
 """
 def user_data(id):
-
+    if id <= 0:
+        return False
     query = {"id": id}
     data = list(account_info.find(query,{"_id": False,"password":False}))
 
@@ -151,7 +155,7 @@ def user_data(id):
 def user_exist(username):
 returns true if username already exist; username is not considered to be case sensitive;
 used in validate_registration_input function to ensure there are no duplicate usernames
-
+query user
 """
 
 
