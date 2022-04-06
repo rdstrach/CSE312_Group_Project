@@ -5,11 +5,13 @@ from pymongo import MongoClient
 
 app = Flask(__name__)
 
+
 # Method to set up and return MongoDB database
 def db():
     client = MongoClient('mongo', 27017)
     db = client['server']
     return db
+
 
 @app.route('/')
 def index():
@@ -24,6 +26,11 @@ def login():
 @app.route('/register')
 def register():
     return render_template('register.html')
+
+
+@app.route('/settings')
+def settings():
+    return render_template('settings.html')
 
 
 if __name__ == "__main__":

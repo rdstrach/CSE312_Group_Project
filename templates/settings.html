@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+    <script type='text/javascript' src="{{ url_for('static', filename= 'script.js') }}"></script>
+    <title>Reminder - Settings</title>
+</head>
+<body>
+<nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
+    <div class="navbar-menu">
+        <div class="navbar-end">
+            <a class="navbar-item" href="/settings">Settings</a>
+            <a class="navbar-item" href="/logout">Logout</a>
+        </div>
+    </div>
+</nav>
+<div class="acc_input">
+    <div>
+        <form method="POST" action="/settings">
+            <div class="field">
+                <div class="control has-icons-left has-icons-right">
+                    <input class="input" type="password" name="old" placeholder="Old password">
+                    <span class="icon is-small is-left">
+                <i class="fas fa-lock"></i>
+            </span>
+                </div>
+            </div>
+            <div class="field">
+                <p class="control has-icons-left">
+                    <input class="input" type="password" name="new" placeholder="New password">
+                    <span class="icon is-small is-left">
+                <i class="fas fa-lock"></i>
+            </span>
+                </p>
+            </div>
+            <div class="field">
+                <p class="control has-icons-left">
+                    <input class="input" type="password" name="new2" placeholder="Confirm new password">
+                    <span class="icon is-small is-left">
+                <i class="fas fa-lock"></i>
+            </span>
+                </p>
+            </div>
+            <div class="control">
+                <button class="button login">Change password</button>
+            </div>
+        </form>
+    </div>
+    <br>
+    <br>
+</div>
+</body>
+</html>
