@@ -1,7 +1,8 @@
 import flask
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 import pymongo
 from pymongo import MongoClient
+import sys
 
 app = Flask(__name__)
 
@@ -18,14 +19,13 @@ def index():
     return render_template('index.html')
 
 # Save Text Messages in Database
-@app.route('/', methods=['POST'])
+@app.route('/text_messages', methods=['POST'])
 def my_form_post():
-    """
-    text = request.form['text']
-    processed_text = text.upper()
-    return processed_text
-    """
-    return render_template('index.html')
+    text = request.form['tm']
+    print(text)
+    print(request.form)
+    sys.stdout.flush()
+    return redirect('/')
 
 
 @app.route('/login')
