@@ -17,6 +17,16 @@ def db():
 def index():
     return render_template('index.html')
 
+# Save Text Messages in Database
+@app.route('/', methods=['POST'])
+def my_form_post():
+    """
+    text = request.form['text']
+    processed_text = text.upper()
+    return processed_text
+    """
+    return render_template('index.html')
+
 
 @app.route('/login')
 def login():
