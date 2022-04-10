@@ -1,6 +1,11 @@
+import sys
+
 from db import *
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
+import flask_server
+
+
 """
 create_user(first_name,last_name,username,password,password_again)
 Add user data to database
@@ -14,8 +19,9 @@ returns set of string(s), with user error descriptions,
 
 
 def create_user(first_name, last_name, username, password, password_again):
-    data = dict()
-    val_ret = set()
+    # data = dict()
+    # val_ret = set()
+    data = {}
     username = str(username).lower()
     val_ret = validate_registration_input(first_name, last_name, username, password, password_again)
     if len(val_ret) != 0:
@@ -32,7 +38,7 @@ def create_user(first_name, last_name, username, password, password_again):
     data["password"] = password_hash
     if len(val_ret) == 0:
         data["id"] = next_id()
-        account_info.insert_one(data)
+        flask_server.account_info.insert_one(data)
         return val_ret
     else:
         return val_ret
@@ -81,7 +87,7 @@ def validate_registration_input(first_name, last_name, username, password, passw
 def login_validation(username, password):
     username = str(username).lower()
     query = {"username": username}
-    data = list(account_info.find(query, {"_id": False, "id": True, "username": True, "password": True}))
+    data = list(flask_server.account_info.find(query, {"_id": False, "id": True, "username": True, "password": True}))
 
     if len(data) != 1:
         return -1
@@ -107,7 +113,7 @@ def user_data(id):
     if id <= 0:
         return False
     query = {"id": id}
-    data = list(account_info.find(query, {"_id": False, "password": False}))
+    data = list(flask_server.account_info.find(query, {"_id": False, "password": False}))
 
     if len(data) != 1:
         return False
@@ -129,7 +135,7 @@ query user
 def user_exist(username):
     username = str(username).lower()
     query = {"username": username}
-    data = list(account_info.find(query, {"_id": False, "id": True, "username": True}))
+    data = list(flask_server.account_info.find(query, {"_id": False, "id": True, "username": True}))
     return len(data) > 0
 
 
@@ -165,16 +171,35 @@ req2-note: undefined behaviour if this value is non-positive
 
 
 def next_id():
-    size = users_id_collection.count_documents(id_query)
+    size = flask_server.users_id_collection.count_documents(flask_server.id_query)
     if size == 0:
         firstId = 1  # should  be a positive start value... req1-note
-        users_id_collection.insert_one({'id': firstId, 'field': 'key'})
+        flask_server.users_id_collection.insert_one({'id': firstId, 'field': 'key'})
         return firstId
     else:
-        current_id = users_id_collection.find(id_query)[0]['id']
+        current_id = flask_server.users_id_collection.find(flask_server.id_query)[0]['id']
         id_distance = 1  # this value must be a positive value... req2-note
         nextId = current_id + id_distance
         newvalues = {"$set": {"id": nextId}}
-        users_id_collection.update_one(id_query, newvalues)
+        flask_server.users_id_collection.update_one(flask_server.id_query, newvalues)
         return nextId
 
+
+def printAllDbEntries():
+    print("starting to print all db entries")
+    print("\n")
+    print("\n")
+    sys.stdout.flush()
+    sys.stderr.flush()
+    allRecords = flask_server.account_info.find({}, {"_id": 0})
+    for entry in allRecords:
+        print("found an entry:")
+        print("username: " + entry["username"])
+        print("password: " + entry["password"])
+        print("\n")
+        sys.stdout.flush()
+        sys.stderr.flush()
+    print("done printing all db entries")
+    print("\n")
+    sys.stdout.flush()
+    sys.stderr.flush()

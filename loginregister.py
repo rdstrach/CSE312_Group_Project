@@ -1,18 +1,8 @@
+import sys
+
 from db import *
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
-# import flask_server
-
-
-
-mongo_client = MongoClient('mongo', 27017)
-version = 1
-account_db = mongo_client["account_db"+str(version)]
-users_id_collection = account_db["id_counter"]
-account_info = account_db["account_info"]
-id_query = {"field": "key"}
-
-
 """
 create_user(first_name,last_name,username,password,password_again)
 Add user data to database
@@ -54,7 +44,6 @@ def create_user(first_name, last_name, username, password, password_again):
 def validate_registration_input(first_name, last_name, username, password, password_again)
 returns empty set if user data is valid
 returns set of strings, with user error descriptions
-
 No changes made to database in this function
 """
 
@@ -111,7 +100,6 @@ def login_validation(username, password):
  def user_data(id)
     returns dictionary of all user data except password give the user id as integer
     returns bool FALSE if id doesn't exist, nonpositive values will return false
-
 """
 
 
@@ -148,7 +136,6 @@ def user_exist(username):
 """
 def password_hash_gen(password)
 return password hash or 0 if hash parameter is typed in incorrectly 
-
 """
 
 
@@ -169,10 +156,8 @@ def password_hash_gen(password):
 def next_id()
 uses collection users_id_collection to count id's; will increment and return id
 Called only for user_create()
-
 req1-note: undefined behaviour if this value is non-positive
 req2-note: undefined behaviour if this value is non-positive
-
 """
 
 
@@ -190,3 +175,21 @@ def next_id():
         users_id_collection.update_one(id_query, newvalues)
         return nextId
 
+def printAll():
+    print("starting to print all db entries")
+    print("\n")
+    print("\n")
+    sys.stdout.flush()
+    sys.stderr.flush()
+    allRecords = account_info.find({}, {"_id": 0})
+    for entry in allRecords:
+        print("found an entry:")
+        print("username: " + entry["username"])
+        print("password: " + entry["password"])
+        print("\n")
+        sys.stdout.flush()
+        sys.stderr.flush()
+    print("done printing all db entries")
+    print("\n")
+    sys.stdout.flush()
+    sys.stderr.flush()
