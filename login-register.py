@@ -1,6 +1,7 @@
 from db import *
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
+
 """
 create_user(first_name,last_name,username,password,password_again)
 Add user data to database
@@ -178,3 +179,26 @@ def next_id():
         users_id_collection.update_one(id_query, newvalues)
         return nextId
 
+
+"""
+def change_password()
+updates the password in the database with the hash of the new password
+
+"""
+
+
+def change_password(username, old_password, new_password, new_password_again):
+    if new_password != new_password_again:
+        return False
+
+    old_password_hash = password_hash_gen(old_password)
+    myquery= {"username": username}
+    mydoc= account_info.find(myquery)
+    old_password_in_db= mydoc["password"]
+
+    if old_password_hash!= old_password_in_db:
+        return False
+    else:
+        new_password_hash = password_hash_gen(new_password)
+        account_info.update_one({"username": username}, {"$set": {"password": new_password_hash}})
+        return True
