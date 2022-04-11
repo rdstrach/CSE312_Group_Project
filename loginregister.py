@@ -2,6 +2,7 @@ from db import *
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 """
+
 create_user(first_name,last_name,username,password,password_again)
 Add user data to database
 if successful 
@@ -180,6 +181,7 @@ def next_id():
 
 #----------- login in list
 '''
+def is_signed(user_id):
 Uses logged_in collection to check if user is logged in
 Returns True if user is logged in
 Returns False if user is not logged in
@@ -193,6 +195,7 @@ def is_signed(user_id):
     data = list(logged_in.find(query, {"_id": False, "id": True}))
     return len(data) > 0
 '''
+def login_user(user_id):
 Insert id logged_in collection
 Returns True if user exist and was not logged
 Returns False if user does not exist or is already logged in
@@ -219,7 +222,9 @@ def login_user(user_id):
     logged_in.insert_one(user)
     return True
 '''
-returns, a list of logged in users
+def login_list():
+Returns: list of logged in users
+Returns: empty list if no users are logged on
 '''
 def login_list():
     cur = logged_in.find()
