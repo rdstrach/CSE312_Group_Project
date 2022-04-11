@@ -1,3 +1,11 @@
+'''
+Filename: loginregister
+File Created by Ryan Strachan
+File edited by:  ...
+Contains functions for accessing and modifing "logined_in" collection
+dependencies db.py and loginregister.py
+'''
+
 from db import *
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash

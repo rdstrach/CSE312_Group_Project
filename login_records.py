@@ -3,6 +3,8 @@ Filename: login_records
 File Created by Ryan Strachan
 Contains functions for accessing and modifing "logined_in" collection
 File edited by:  ...
+
+dependencies db.py and loginregister.py
 '''
 
 from db import *
@@ -29,7 +31,7 @@ def is_signed(user_id):
 def login_user(user_id):
 Insert id logged_in collection
 
-Input user id
+Input: User id
 Returns: True if user exist and was not logged
 or False if user does not exist or is already logged in
 
@@ -57,7 +59,7 @@ def login_user(user_id):
 '''
 def login_list():
 
-Input: user id
+Input: User id
 Returns: list of logged in users
 or empty list if no users are logged on
 '''
