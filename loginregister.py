@@ -99,6 +99,8 @@ def login_validation(username, password):
 
 """
  def user_data(id)
+ 
+    input: user id
     returns dictionary of all user data except password give the user id as integer
     returns bool FALSE if id doesn't exist, nonpositive values will return false
 
@@ -122,6 +124,8 @@ def user_data(id):
 
 """
 def user_exist(username):
+
+input: username
 returns true if username already exist; username is not considered to be case sensitive;
 used in validate_registration_input function to ensure there are no duplicate usernames
 query user

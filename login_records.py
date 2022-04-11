@@ -12,6 +12,8 @@ from loginregister import user_data
 '''
 def is_signed(user_id):
 Uses logged_in collection to check if user is logged in
+
+input: user id
 Returns True if user is logged in
 Returns False if user is not logged in
 
@@ -26,8 +28,10 @@ def is_signed(user_id):
 '''
 def login_user(user_id):
 Insert id logged_in collection
-Returns True if user exist and was not logged
-Returns False if user does not exist or is already logged in
+
+Input user id
+Returns: True if user exist and was not logged
+or False if user does not exist or is already logged in
 
 '''
 def login_user(user_id):
@@ -52,8 +56,10 @@ def login_user(user_id):
     return True
 '''
 def login_list():
+
+Input: user id
 Returns: list of logged in users
-Returns: empty list if no users are logged on
+or empty list if no users are logged on
 '''
 def login_list():
     cur = logged_in.find()
