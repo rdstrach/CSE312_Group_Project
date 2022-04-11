@@ -12,5 +12,6 @@ users_id_collection: collection for id increment. Only used by next_id
 account_db = mongo_client["account_db"+str(version)]
 users_id_collection = account_db["id_counter"]
 account_info = account_db["account_info"]
+logged_in = account_db["login"]
 id_query = {"field": "key"}
 
