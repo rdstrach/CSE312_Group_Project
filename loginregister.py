@@ -219,7 +219,7 @@ def login_user(user_id):
     logged_in.insert_one(user)
     return True
 '''
-returns, a list of all users
+returns, a list of logged in users
 '''
 def login_list():
     cur = logged_in.find()
