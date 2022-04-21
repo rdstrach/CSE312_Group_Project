@@ -1,8 +1,9 @@
 import flask
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect
 import pymongo
 from pymongo import MongoClient
 import sys
+import text_messages
 
 app = Flask(__name__)
 
@@ -20,10 +21,11 @@ def index():
 
 # Save Text Messages in Database
 @app.route('/text_messages', methods=['POST'])
-def my_form_post():
+def text_messages():
+    username = "testuser1"
     text = request.form['tm']
-    print(text)
-    print(request.form)
+    text_messages.loads_tm(text)
+    text_messages.print_tm()
     sys.stdout.flush()
     return redirect('/')
 
