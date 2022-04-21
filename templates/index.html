@@ -26,7 +26,7 @@
     </div>
 
     <div class="tile is-vertical is-8 is-parent">
-        <article class="tile box is-child">
+        <article class="tile box is-child"> <!-- text message post box-->
             <form action="text_messages" method = "post">
                 <div class="field">
                     <div class="control">
@@ -41,7 +41,8 @@
                 </div>
             </form> 
         </article>
-        <article class="tile box is-child">
+        {% for tm in text_messages %}
+        <article class="tile box is-child"> <!-- text message display -->
             <div class="card-content">
                 <div class="media">
                     <div class="media-left">
@@ -50,13 +51,13 @@
                         </figure>
                     </div>
                     <div class="media-content">
-                        <p class="title is-4">user1</p>
+                        <p class="title is-4">{{ tm.username|e }}</p>
                     </div>
                 </div>
                 <div class="content">
-                    Lorem ipsum dolor sit amet
+                    <p>{{ tm.message|e }}</p>
                     <br>
-                    <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                    <time datetime= "{{ tm.time }}">{{ tm.time }}</time>
                 </div>
                 <button class="button">
                         <span class="icon is-small">
@@ -64,9 +65,9 @@
                         </span>
                     <span>Votes: 0</span>
                 </button>
-
             </div>
         </article>
+        {% endfor %}
         <article class="tile box is-child">
             <div class="card-image">
                 <figure class="image">

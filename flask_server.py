@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect
 import pymongo
 from pymongo import MongoClient
 import sys
-import text_messages
+import tm
 
 app = Flask(__name__)
 
@@ -17,16 +17,16 @@ def db():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    tm_list = tm.returns_tm()
+    tm_list.reverse()
+    return render_template('index.html', text_messages=tm_list)
 
 # Save Text Messages in Database
 @app.route('/text_messages', methods=['POST'])
 def text_messages():
     username = "testuser1"
     text = request.form['tm']
-    text_messages.loads_tm(text)
-    text_messages.print_tm()
-    sys.stdout.flush()
+    tm.loads_tm(username, text)
     return redirect('/')
 
 
