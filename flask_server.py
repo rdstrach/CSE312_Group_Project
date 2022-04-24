@@ -1,10 +1,14 @@
 import flask
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import flask_login
 import pymongo
 from pymongo import MongoClient
 # import db as database
 import loginregister as usermanagement
+# import for text messages
+import sys
+import tm
+
 
 app = Flask(__name__)
 
@@ -22,7 +26,18 @@ def db():
 @app.route('/')
 @flask_login.login_required
 def index():
-    return render_template('index.html')
+    tm_list = tm.returns_tm()
+    tm_list.reverse()
+    return render_template('index.html', text_messages=tm_list)
+
+
+# Save Text Messages in Database
+@app.route('/text_messages', methods=['POST'])
+def text_messages():
+    username = "testuser1"
+    text = request.form['tm']
+    tm.loads_tm(username, text)
+    return redirect('/')
 
 
 @app.route('/login')
