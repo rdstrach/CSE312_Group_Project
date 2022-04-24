@@ -21,6 +21,7 @@ def index():
     tm_list.reverse()
     return render_template('index.html', text_messages=tm_list)
 
+
 # Save Text Messages in Database
 @app.route('/text_messages', methods=['POST'])
 def text_messages():
