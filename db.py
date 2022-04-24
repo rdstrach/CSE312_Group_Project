@@ -13,4 +13,3 @@ account_db = mongo_client["account_db"+str(version)]
 users_id_collection = account_db["id_counter"]
 account_info = account_db["account_info"]
 id_query = {"field": "key"}
-
