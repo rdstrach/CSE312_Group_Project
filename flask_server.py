@@ -22,26 +22,54 @@ def db():
 @app.route('/')
 @flask_login.login_required
 def index():
+    usermanagement.printAll()
     return render_template('index.html')
-
 
 @app.route('/login')
 def login():
     return render_template('login.html')
 
+@app.route('/login', methods=['POST'])
+def loginPOST():
+    username: str = request.form.get("name")
+    password: str = request.form.get("password")
+    if usermanagement.login_validation(username, password) != -1:
+        user = load_user(username)
+        # add into list of logged in users
+
+        flask_login.login_user(user, remember=True)
+        return flask.redirect(flask.url_for('index'))
+    else:
+        #display flask error message "incorrect username/password"
+        return render_template('login.html')
+
 @app.route('/register', methods=['POST'])
 def registerPOST():
     username: str = request.form.get("name")
     password: str = request.form.get("password")
+    firstname: str = request.form.get("firstname")
+    lastname: str = request.form.get("lastname")
+    # add profile image processing here
+
     # passwordAgain: str = request.form.get("passwordagain")
-    usermanagement.create_user("test","test",username,password,password) #last parameter shld be passwordAgain
+    usermanagement.create_user(firstname,lastname,username,password,password) #last parameter shld be passwordAgain
     user = load_user(username)
+    # add into list of logged in users
+
     flask_login.login_user(user, remember=True)
     return flask.redirect(flask.url_for('index'))
 
 @app.route('/register')
 def register():
     return render_template('register.html')
+
+@app.route('/logout')
+@flask_login.login_required
+def logout():
+    flask_login.logout_user()
+    # remove from list of logged in users
+
+    return flask.redirect(flask.url_for('login'))
 
 class User(flask_login.UserMixin):
     def __init__(self, username, active=True):
