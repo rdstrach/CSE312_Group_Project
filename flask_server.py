@@ -1,12 +1,7 @@
 import flask
 from flask import Flask, render_template, request, redirect
 import flask_login
-import pymongo
-from pymongo import MongoClient
-# import db as database
 import loginregister as usermanagement
-# import for text messages
-import sys
 import tm
 
 
@@ -17,11 +12,6 @@ login_manager = flask_login.LoginManager()
 login_manager.login_view = 'login'
 login_manager.init_app(app)
 
-# Method to set up and return MongoDB database
-def db():
-    client = MongoClient('mongo', 27017)
-    db = client['server']
-    return db
 
 @app.route('/')
 @flask_login.login_required
