@@ -1,12 +1,14 @@
 import flask
 from flask import Flask, render_template, request, redirect
 import flask_login
+from werkzeug.utils import secure_filename
 import loginregister as usermanagement
 import tm
 
 app = Flask(__name__)
 
 app.secret_key = "0000"  # os.environ['SECRET_KEY'] but not working with this value
+app.config['UPLOAD_FOLDER'] = './static/images/'
 login_manager = flask_login.LoginManager()
 login_manager.login_view = 'login'
 login_manager.init_app(app)
@@ -38,8 +40,8 @@ def login():
 def registerPOST():
     ret = usermanagement.create_user(request.form.get("firstname"), request.form.get("lastname"),
                                      request.form.get("name"), request.form.get("password"),
-                                     request.form.get("passwordagain"))
-    if ret is None:
+                                     request.form.get("passwordagain"), request.files['profile'])
+    if len(ret) == 0:
         user = load_user(request.form.get("name"))
         flask_login.login_user(user, remember=True)
         return flask.redirect(flask.url_for('index'))
