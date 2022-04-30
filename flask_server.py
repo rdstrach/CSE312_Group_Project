@@ -1,27 +1,18 @@
 import flask
 from flask import Flask, render_template, request, redirect
 import flask_login
-import pymongo
-from pymongo import MongoClient
-# import db as database
+from werkzeug.utils import secure_filename
 import loginregister as usermanagement
-# import for text messages
-import sys
 import tm
-
 
 app = Flask(__name__)
 
-app.secret_key = "0000" #os.environ['SECRET_KEY'] but not working with this value
+app.secret_key = "0000"  # os.environ['SECRET_KEY'] but not working with this value
+app.config['UPLOAD_FOLDER'] = './static/images/'
 login_manager = flask_login.LoginManager()
 login_manager.login_view = 'login'
 login_manager.init_app(app)
 
-# Method to set up and return MongoDB database
-def db():
-    client = MongoClient('mongo', 27017)
-    db = client['server']
-    return db
 
 @app.route('/')
 @flask_login.login_required
@@ -44,19 +35,26 @@ def text_messages():
 def login():
     return render_template('login.html')
 
+
 @app.route('/register', methods=['POST'])
 def registerPOST():
-    username: str = request.form.get("name")
-    password: str = request.form.get("password")
-    # passwordAgain: str = request.form.get("passwordagain")
-    usermanagement.create_user("test","test",username,password,password) #last parameter shld be passwordAgain
-    user = load_user(username)
-    flask_login.login_user(user, remember=True)
-    return flask.redirect(flask.url_for('index'))
+    ret = usermanagement.create_user(request.form.get("firstname"), request.form.get("lastname"),
+                                     request.form.get("name"), request.form.get("password"),
+                                     request.form.get("passwordagain"), request.files['profile'])
+    if len(ret) == 0:
+        user = load_user(request.form.get("name"))
+        flask_login.login_user(user, remember=True)
+        return flask.redirect(flask.url_for('index'))
+    else:
+        for r in ret:
+            flask.flash(r)
+        return flask.redirect(flask.url_for('register'))
+
 
 @app.route('/register')
 def register():
     return render_template('register.html')
+
 
 class User(flask_login.UserMixin):
     def __init__(self, username, active=True):
@@ -79,9 +77,11 @@ class User(flask_login.UserMixin):
         """False, as anonymous users aren't supported."""
         return False
 
+
 @login_manager.user_loader
 def load_user(username):
     return User(username, True)
+
 
 @app.route('/settings')
 def settings():

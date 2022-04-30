@@ -1,5 +1,4 @@
-from flask_server import db
-from pymongo import MongoClient
+from db import db
 import sys
 import string
 from datetime import datetime
