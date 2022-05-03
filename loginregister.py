@@ -59,6 +59,9 @@ def create_user(first_name, last_name, username, password, password_again, file)
         data["id"] = next_id()
         data["image"] = user_image(username, file)
         account_info.insert_one(data)
+        user = dict()
+        user["username"] = username
+        logged_in_users.insert_one(user)
         return val_ret
     else:
         return val_ret
@@ -211,7 +214,7 @@ def change_password(username, old_password, new_password, new_password_again):
 
 
     myquery= {"username": username}
-    mydoc= account_info.find(myquery)
+    mydoc= account_info.find_one(myquery)
     old_password_in_db= mydoc["password"]
 
     if check_password_hash(old_password_in_db, old_password):
@@ -221,6 +224,16 @@ def change_password(username, old_password, new_password, new_password_again):
     else:
         return False
 
+""" 
+def logged_in_user_list()
+returns a list of all the usernames of people currently logged in, including people that aren't active but are still logged in
+"""
+
+def logged_in_user_list():
+    listy = []
+    for x in logged_in_users.find():
+        listy.append(x["username"])
+    return listy
 
 def printAll():
     print("starting to print all db entries")
