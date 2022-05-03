@@ -1,3 +1,5 @@
+import sys
+
 import flask
 from flask import Flask, render_template, request, redirect
 import flask_login
@@ -41,7 +43,9 @@ def loginPOST():
     password: str = request.form.get("password")
     if usermanagement.login_validation(username, password) != -1:
         user = load_user(username)
+
         # add into list of logged in users
+        usermanagement.logged_in_users.insert_one({"username": username})
 
         flask_login.login_user(user, remember=True)
         return flask.redirect(flask.url_for('index'))
@@ -75,6 +79,8 @@ def register():
 def logout():
     flask_login.logout_user()
     # remove from list of logged in users
+    myquery = {"username": flask_login.current_user.username}
+    usermanagement.logged_in_users.delete_one(myquery)
 
     return flask.redirect(flask.url_for('login'))
 
@@ -104,9 +110,19 @@ class User(flask_login.UserMixin):
 def load_user(username):
     return User(username, True)
 
+@app.route('/settings', methods=['POST'])
+def settingsPOST():
+    # x= flask_login.current_user.username
+    # print(x)
+    # sys.stdout.flush()
+    # sys.stderr.flush()
+    usermanagement.change_password(flask_login.current_user.username , request.form.get("old"), request.form.get("new"), request.form.get("new2"))
+    return flask.redirect(flask.url_for('settings'))
 
 @app.route('/settings')
+@flask_login.login_required
 def settings():
+
     return render_template('settings.html')
 
 
