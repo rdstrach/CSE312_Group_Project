@@ -117,7 +117,7 @@ def settingsPOST():
     # sys.stdout.flush()
     # sys.stderr.flush()
     usermanagement.change_password(flask_login.current_user.username , request.form.get("old"), request.form.get("new"), request.form.get("new2"))
-    return flask.redirect(flask.url_for('login'))
+    return flask.redirect(flask.url_for('settings'))
 
 @app.route('/settings')
 @flask_login.login_required
