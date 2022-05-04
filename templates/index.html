@@ -47,11 +47,12 @@
                 <div class="media">
                     <div class="media-left">
                         <figure class="image is-48x48">
-                            <img src="{{ image_path }}" alt="Placeholder image">
+                            <img src="{{ tm.image }}" alt="Profile image">
                         </figure>
                     </div>
                     <div class="media-content">
-                        <p class="title is-4">{{ tm.username|e }}</p>
+                        <h1 class="title is-4">{{ tm.firstname|e }} {{ tm.lastname|e }}</h1>
+                        <h2 class="subtitle">@{{ tm.username|e }}</h2>
                     </div>
                 </div>
                 <div class="content">

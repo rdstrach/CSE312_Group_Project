@@ -20,15 +20,13 @@ login_manager.init_app(app)
 def index():
     tm_list = tm.returns_tm()
     tm_list.reverse()
-    return render_template('index.html', text_messages=tm_list, image_path="./static/images/kitten.jpg")
+    return render_template('index.html', text_messages=tm_list)
 
 
 # Save Text Messages in Database
 @app.route('/text_messages', methods=['POST'])
 def text_messages():
-    username = "testuser1"
-    text = request.form['tm']
-    tm.loads_tm(username, text)
+    tm.loads_tm(flask_login.current_user.username, request.form['tm'])
     return redirect('/')
 
 
