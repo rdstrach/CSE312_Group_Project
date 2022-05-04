@@ -3,7 +3,6 @@ import sys
 import flask
 from flask import Flask, render_template, request, redirect
 import flask_login
-from werkzeug.utils import secure_filename
 import loginregister as usermanagement
 import tm
 
@@ -21,7 +20,7 @@ login_manager.init_app(app)
 def index():
     tm_list = tm.returns_tm()
     tm_list.reverse()
-    return render_template('index.html', text_messages=tm_list)
+    return render_template('index.html', text_messages=tm_list, image_path="./static/images/kitten.jpg")
 
 
 # Save Text Messages in Database
