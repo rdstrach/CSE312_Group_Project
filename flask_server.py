@@ -47,7 +47,7 @@ def loginPOST():
         flask_login.login_user(user, remember=True)
         return flask.redirect(flask.url_for('index'))
     else:
-        #display flask error message "incorrect username/password"
+        flask.flash("Incorrect username/password")
         return render_template('login.html')
 
 
