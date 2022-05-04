@@ -19,8 +19,9 @@
         <div class="tile box is-child">
             <h1 class="title is-4 is-spaced">Currently Online:</h1>
             <ul>
-                <li><a href="#">user1</a></li>
-                <li><a href="#">user2</a></li>
+                {% for user in users %}
+                <li><a href="#">{{ user }}</a></li>
+                {% endfor %}
             </ul>
         </div>
     </div>

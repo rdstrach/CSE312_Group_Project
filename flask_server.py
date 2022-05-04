@@ -20,7 +20,7 @@ login_manager.init_app(app)
 def index():
     tm_list = tm.returns_tm()
     tm_list.reverse()
-    return render_template('index.html', text_messages=tm_list)
+    return render_template('index.html', text_messages=tm_list, users=usermanagement.logged_in_user_list())
 
 
 # Save Text Messages in Database
