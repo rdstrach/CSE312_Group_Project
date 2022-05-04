@@ -1,17 +1,32 @@
-'''
-Filename: loginregister
-File Created by Ryan Strachan
-File edited by:  ...
-Contains functions for accessing and modifing "logined_in" collection
-dependencies db.py and loginregister.py
-'''
-
+import sys
+from werkzeug.utils import secure_filename
 from db import *
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+"""
+store user image if allowed and return path, else return default image
 """
 
+
+def user_image(username, file):
+    profile_stored = f'./static/images/{username}-{secure_filename(file.filename)}'
+    if file.filename != '':
+        if file and allowed_file(file.filename):
+            file.save(profile_stored)
+            return profile_stored
+    return './static/images/kitten.jpg'
+
+
+"""
 create_user(first_name,last_name,username,password,password_again)
 Add user data to database
 if successful 
@@ -23,7 +38,7 @@ returns set of string(s), with user error descriptions,
 """
 
 
-def create_user(first_name, last_name, username, password, password_again):
+def create_user(first_name, last_name, username, password, password_again, file):
     data = dict()
     val_ret = set()
     username = str(username).lower()
@@ -42,7 +57,11 @@ def create_user(first_name, last_name, username, password, password_again):
     data["password"] = password_hash
     if len(val_ret) == 0:
         data["id"] = next_id()
+        data["image"] = user_image(username, file)
         account_info.insert_one(data)
+        user = dict()
+        user["username"] = username
+        logged_in_users.insert_one(user)
         return val_ret
     else:
         return val_ret
@@ -52,7 +71,6 @@ def create_user(first_name, last_name, username, password, password_again):
 def validate_registration_input(first_name, last_name, username, password, password_again)
 returns empty set if user data is valid
 returns set of strings, with user error descriptions
-
 No changes made to database in this function
 """
 
@@ -107,11 +125,8 @@ def login_validation(username, password):
 
 """
  def user_data(id)
- 
-    input: user id
     returns dictionary of all user data except password give the user id as integer
     returns bool FALSE if id doesn't exist, nonpositive values will return false
-
 """
 
 
@@ -132,8 +147,6 @@ def user_data(id):
 
 """
 def user_exist(username):
-
-input: username
 returns true if username already exist; username is not considered to be case sensitive;
 used in validate_registration_input function to ensure there are no duplicate usernames
 query user
@@ -150,7 +163,6 @@ def user_exist(username):
 """
 def password_hash_gen(password)
 return password hash or 0 if hash parameter is typed in incorrectly 
-
 """
 
 
@@ -171,10 +183,8 @@ def password_hash_gen(password):
 def next_id()
 uses collection users_id_collection to count id's; will increment and return id
 Called only for user_create()
-
 req1-note: undefined behaviour if this value is non-positive
 req2-note: undefined behaviour if this value is non-positive
-
 """
 
 
@@ -192,4 +202,54 @@ def next_id():
         users_id_collection.update_one(id_query, newvalues)
         return nextId
 
-#----------- login in list
+"""
+def change_password()
+updates the password in the database with the hash of the new password
+"""
+
+
+def change_password(username, old_password, new_password, new_password_again):
+    if new_password != new_password_again:
+        return False
+
+
+    myquery= {"username": username}
+    mydoc= account_info.find_one(myquery)
+    old_password_in_db= mydoc["password"]
+
+    if check_password_hash(old_password_in_db, old_password):
+        new_password_hash = password_hash_gen(new_password)
+        account_info.update_one({"username": username}, {"$set": {"password": new_password_hash}})
+        return True
+    else:
+        return False
+
+""" 
+def logged_in_user_list()
+returns a list of all the usernames of people currently logged in, including people that aren't active but are still logged in
+"""
+
+def logged_in_user_list():
+    listy = []
+    for x in logged_in_users.find():
+        listy.append(x["username"])
+    return listy
+
+def printAll():
+    print("starting to print all db entries")
+    print("\n")
+    print("\n")
+    sys.stdout.flush()
+    sys.stderr.flush()
+    allRecords = account_info.find({}, {"_id": 0})
+    for entry in allRecords:
+        print("found an entry:")
+        print("username: " + entry["username"])
+        print("password: " + entry["password"])
+        print("\n")
+        sys.stdout.flush()
+        sys.stderr.flush()
+    print("done printing all db entries")
+    print("\n")
+    sys.stdout.flush()
+    sys.stderr.flush()
