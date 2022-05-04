@@ -21,3 +21,7 @@ def db():
     client = MongoClient('mongo', 27017)
     db = client['server']
     return db
+
+
+def get_user_info(username):
+    return account_info.find_one({'username': username})
