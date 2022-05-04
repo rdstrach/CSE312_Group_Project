@@ -74,10 +74,10 @@ def register():
 @app.route('/logout')
 @flask_login.login_required
 def logout():
-    flask_login.logout_user()
     # remove from list of logged in users
     myquery = {"username": flask_login.current_user.username}
     usermanagement.logged_in_users.delete_one(myquery)
+    flask_login.logout_user()
 
     return flask.redirect(flask.url_for('login'))
 
