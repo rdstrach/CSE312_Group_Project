@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect
 import flask_login
 import pymongo
 from pymongo import MongoClient
+from flask_sock import Sock
 # import db as database
 import loginregister as usermanagement
 # import for text messages
@@ -11,6 +12,8 @@ import tm
 
 
 app = Flask(__name__)
+sock = Sock(app)
+
 
 app.secret_key = "0000" #os.environ['SECRET_KEY'] but not working with this value
 login_manager = flask_login.LoginManager()
@@ -38,7 +41,6 @@ def text_messages():
     text = request.form['tm']
     tm.loads_tm(username, text)
     return redirect('/')
-
 
 @app.route('/login')
 def login():
@@ -87,6 +89,14 @@ def load_user(username):
 def settings():
     return render_template('settings.html')
 
+# Websocket for upvote
+@sock.route('/upvote')
+def upvote(ws):
+    while True:
+        data = ws.receive()
+        tm.upvotes_tm(data)
+        ws.send('{"messageType": "upvote", "status": "OK"}')
+        tm.prints_tm()
 
 if __name__ == "__main__":
     Flask.run(app, "0.0.0.0", 5000, True)
