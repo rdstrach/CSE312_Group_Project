@@ -116,7 +116,11 @@ def settingsPOST():
     usermanagement.change_password(flask_login.current_user.username , request.form.get("old"), request.form.get("new"), request.form.get("new2"))
     return flask.redirect(flask.url_for('settings'))
 
-
+'''
+websocket input: {"username":"username sending to","message":"msg being sent"}
+websocket sends to specified users thread the json..so recipient receives the following websocket output.. 
+websocket output: {"username":"username of sender","message"}
+'''
 message_receive=dict()
 sock = Sock(app)
 @sock.route('/DM_websocket')
@@ -129,7 +133,7 @@ def wsocket(ws):
     message_receive.update({username:[]})
     print(message_receive.keys())
     print("\nthread start for user: "+ username)
-    #Thread(target = msgToMe, args = ()).start()
+
     while True:
         data=ws.receive()
         #if data length is 0 check dictionary for a message
