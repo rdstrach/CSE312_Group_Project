@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Chat</title>
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+    <script src="{{ url_for('static', filename= 'script.js') }}"></script>
 </head>
 <body>
 <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
@@ -14,6 +15,24 @@
         </div>
     </div>
 </nav>
+
+<div class="dm">
+    <div class="notification">
+        <button class="delete"></button>
+        <b>[username] says:</b><br>
+        [message]<br><br>
+        <button>reply</button>
+    </div>
+
+    <div class="notification">
+        <button class="delete"></button>
+        <b>Send message to [username]:</b><br>
+        <input class="input" type="text" placeholder="Text input"><br><br>
+        <button>send</button>
+    </div>
+</div>
+
+
 <div class="main tile is-ancestor">
     <div class="users tile is-2 is-parent">
         <div class="tile box is-child">
