@@ -48,6 +48,7 @@ def prints_tm():
         sys.stdout.flush()
         sys.stderr.flush()
 
+# Finds and increments vote in the datasebase: "text messages" collection. Returns id and new vote count.
 def upvotes_tm(json_string: string):
     server = db()
     tm_collection = server[collection_name]
@@ -62,10 +63,12 @@ def upvotes_tm(json_string: string):
         if line.get("id") == tm_id:
             votes = int(line["votes"])
             votes += 1
-            # line["votes"] = str(votes) # Can't directly manipulate db
             break
     
     # Update query
     search_query = { "id": tm_id }
     new_votes = { "$set": { "votes": str(votes) } }
     tm_collection.update_one(search_query, new_votes)
+
+    # Return new vote count
+    return [tm_id, str(votes)]

@@ -63,7 +63,7 @@
                         <span class="icon is-small">
                             <i class="fa-solid fa-thumbs-up"></i>
                         </span>
-                    <span>Votes: {{ tm.votes|e }}</span>
+                    <span id="upvotes{{ tm.id|e }}">Votes: {{ tm.votes|e }}</span>
                 </button>
             </div>
         </article>
@@ -114,6 +114,11 @@
 <!-- JS Script -->
 <script>
     const socket_upvote = new WebSocket('ws://' + location.host + '/upvote');
+
+    socket_upvote.addEventListener('message', event => {
+        document.getElementById('upvotes').innerHTML = "Votes: "
+        socket_upvote.send(event.data)
+      });
 
     function upvote_button(tm_id) {
         socket_upvote.send('{"messageType": "upvote", "id": "' + tm_id + '"}');

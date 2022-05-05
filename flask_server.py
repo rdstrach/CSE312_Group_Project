@@ -10,10 +10,10 @@ import loginregister as usermanagement
 import sys
 import tm
 
-
 app = Flask(__name__)
 sock = Sock(app)
 
+ws_connections = []
 
 app.secret_key = "0000" #os.environ['SECRET_KEY'] but not working with this value
 login_manager = flask_login.LoginManager()
@@ -91,12 +91,21 @@ def settings():
 
 # Websocket for upvote
 @sock.route('/upvote')
-def upvote(ws):
+def upvote(sock):
+    ws_connections.append(sock)
     while True:
-        data = ws.receive()
-        tm.upvotes_tm(data)
-        ws.send('{"messageType": "upvote", "status": "OK"}')
+        data = sock.receive()
+        new_votes = tm.upvotes_tm(data)
+        # Send to all websocket connections
+        for ws in ws_connections:
+            try:
+                ws.send('{"messageType": "upvote", "status": "OK", "id": "' + new_votes[0] + '", "votes": "' + new_votes[1] + '"}')
+            except: # If ConnectionError, remove inactive ws from list
+                ws_connections.remove(ws)
         tm.prints_tm()
+        print(ws_connections)
+        sys.stdout.flush()
+        sys.stderr.flush()
 
 if __name__ == "__main__":
     Flask.run(app, "0.0.0.0", 5000, True)
