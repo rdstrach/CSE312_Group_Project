@@ -76,7 +76,7 @@ def register():
 def logout():
     # remove from list of logged in users
     myquery = {"username": flask_login.current_user.username}
-    usermanagement.logged_in_users.delete_one(myquery)
+    usermanagement.logged_in_users.delete_many(myquery)
     flask_login.logout_user()
 
     return flask.redirect(flask.url_for('login'))
