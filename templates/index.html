@@ -116,8 +116,8 @@
     const socket_upvote = new WebSocket('ws://' + location.host + '/upvote');
 
     socket_upvote.addEventListener('message', event => {
-        document.getElementById('upvotes').innerHTML = "Votes: "
-        socket_upvote.send(event.data)
+        const json_obj = JSON.parse(event.data)
+        document.getElementById('upvotes' + json_obj.id).innerHTML = "Votes: " + json_obj.votes;
       });
 
     function upvote_button(tm_id) {
