@@ -230,10 +230,10 @@ returns a list of all the usernames of people currently logged in, including peo
 """
 
 def logged_in_user_list():
-    listy = []
+    sety = set()
     for x in logged_in_users.find():
-        listy.append(x["username"])
-    return listy
+        sety.add(x["username"])
+    return sety
 
 def printAll():
     print("starting to print all db entries")
