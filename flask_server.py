@@ -5,7 +5,7 @@ from flask import Flask, render_template, request, redirect
 import flask_login
 import loginregister as usermanagement
 import tm
-
+from flask_sock import Sock
 app = Flask(__name__)
 
 app.secret_key = "0000"  # os.environ['SECRET_KEY'] but not working with this value
@@ -116,6 +116,31 @@ def settingsPOST():
     usermanagement.change_password(flask_login.current_user.username , request.form.get("old"), request.form.get("new"), request.form.get("new2"))
     return flask.redirect(flask.url_for('settings'))
 
+
+message_receive=dict()
+sock = Sock(app)
+@sock.route('/DM_websocket')
+def wsocket(ws):
+    listofusers=usermanagement.logged_in_user_list()
+
+    import re,json
+    global message_receive
+    username=flask_login.current_user.username#need to know what username is creating websocket
+    message_receive.update({username:[]})
+    print(message_receive.keys())
+    print("\nthread start for user: "+ username)
+    #Thread(target = msgToMe, args = ()).start()
+    while True:
+        data=ws.receive()
+        #if data length is 0 check dictionary for a message
+        if len(data)!=0:
+            print(data)
+            data_parse=json.loads(data)
+            r_payload= re.sub(data_parse['username'],username,data)
+            message_receive[data_parse['username']].append(r_payload)
+        else:
+            if (len(message_receive[username])!=0):
+                ws.send(message_receive[username].pop(0))
 @app.route('/settings')
 @flask_login.login_required
 def settings():
