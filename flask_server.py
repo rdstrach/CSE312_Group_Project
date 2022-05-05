@@ -37,6 +37,7 @@ def login():
 @app.route('/login', methods=['POST'])
 def loginPOST():
     username: str = request.form.get("name")
+    username = username.lower()
     password: str = request.form.get("password")
     if usermanagement.login_validation(username, password) != -1:
         user = load_user(username)
