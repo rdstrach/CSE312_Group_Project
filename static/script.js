@@ -10,20 +10,16 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 socket = new WebSocket('ws://' + window.location.host + '/DM_websocket');
-var chatmsgId=1;
+
 function addMessage(chatMessage) {
     let chat = document.getElementById('chat');
     // chat.innerHTML += "<b>" + chatMessage['username'] + "</b>: " + chatMessage["message"] + "<br/>";
-    let msgId="msg_"+chatmsgId.toString();
 
-    chat.innerHTML += "<div class=\"notification\" id=\""+msgId+"\"><button class=\"delete\" onclick=\"delete_message("+chatmsgId.toString()+")\"></button><b>" + chatMessage['username']
+    chat.innerHTML += "<div class=\"notification\"><button class=\"delete\"></button><b>" + chatMessage['username']
         + " says:</b><br>" + chatMessage["message"] + "<br><br></div>"
-    chatmsgId++;
+
 }
-function delete_message(id){
-let msgId="msg_"+id.toString();
-document.getElementById(msgId).style.display = "none";
-}
+
 function show_dm() {
     let chat = document.getElementById('chat');
     chat.innerHTML += "<div class=\"notification\"><button class=\"delete\"></button><b>Send message to:</b><br>" +

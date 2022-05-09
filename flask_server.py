@@ -3,10 +3,17 @@ import sys
 import flask
 from flask import Flask, render_template, request, redirect
 import flask_login
+import pymongo
+from pymongo import MongoClient
+from flask_sock import Sock
+# import db as database
 import loginregister as usermanagement
 import tm
 from flask_sock import Sock
 app = Flask(__name__)
+sock = Sock(app)
+
+ws_connections = []
 
 app.secret_key = "0000"  # os.environ['SECRET_KEY'] but not working with this value
 app.config['UPLOAD_FOLDER'] = './static/images/'
@@ -20,7 +27,7 @@ login_manager.init_app(app)
 def index():
     tm_list = tm.returns_tm()
     tm_list.reverse()
-    return render_template('index.html', text_messages=tm_list)
+    return render_template('index.html', text_messages=tm_list, users=usermanagement.logged_in_user_list())
 
 
 # Save Text Messages in Database
@@ -28,7 +35,6 @@ def index():
 def text_messages():
     tm.loads_tm(flask_login.current_user.username, request.form['tm'])
     return redirect('/')
-
 
 @app.route('/login')
 def login():
@@ -47,7 +53,7 @@ def loginPOST():
         flask_login.login_user(user, remember=True)
         return flask.redirect(flask.url_for('index'))
     else:
-        #display flask error message "incorrect username/password"
+        flask.flash("Incorrect username/password")
         return render_template('login.html')
 
 
@@ -74,10 +80,10 @@ def register():
 @app.route('/logout')
 @flask_login.login_required
 def logout():
-    flask_login.logout_user()
     # remove from list of logged in users
     myquery = {"username": flask_login.current_user.username}
-    usermanagement.logged_in_users.delete_one(myquery)
+    usermanagement.logged_in_users.delete_many(myquery)
+    flask_login.logout_user()
 
     return flask.redirect(flask.url_for('login'))
 
@@ -153,6 +159,23 @@ def settings():
 
     return render_template('settings.html')
 
+# Websocket for upvote
+@sock.route('/upvote')
+def upvote(sock):
+    ws_connections.append(sock)
+    while True:
+        data = sock.receive()
+        new_votes = tm.upvotes_tm(data)
+        # Send to all websocket connections
+        for ws in ws_connections:
+            try:
+                ws.send('{"messageType": "upvote", "status": "OK", "id": "' + new_votes[0] + '", "votes": "' + new_votes[1] + '"}')
+            except: # If ConnectionError, remove inactive ws from list
+                ws_connections.remove(ws)
+        tm.prints_tm()
+        print(ws_connections)
+        sys.stdout.flush()
+        sys.stderr.flush()
 
 if __name__ == "__main__":
     Flask.run(app, "0.0.0.0", 5000, True)
