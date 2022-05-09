@@ -25,13 +25,17 @@
 {#        <button>reply</button>#}
 {#    </div>#}
 {##}
-    <div class="notification">
-        <button class="delete"></button>
+    <div id="msg_display"></div>
+    <div class="notification" id="msg_0">
+        <button class="delete" onclick="delete_message(0)"></button>
         <b>Send message to:</b><br>
         <input class="input" id="chat-username" type="text" placeholder="username"><br>
         <input class="input" id="chat-comment" type="text" placeholder="Message"><br><br>
         <button onclick="sendMessage()">send</button>
+
     </div>
+      <button class="button" id="dm_toggle" onclick="show_dm()">Send a DM</button>
+
 </div>
 
 
@@ -45,7 +49,7 @@
                 {% endfor %}
             </ul>
         <br><br>
-{#        <button class="button" onclick="show_dm()">Send a DM</button>#}
+
         </div>
     </div>
 

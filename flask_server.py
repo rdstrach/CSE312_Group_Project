@@ -143,13 +143,20 @@ def wsocket(ws):
 
     while True:
         data=ws.receive()
-        if not username in listofusers:
+        if username not in listofusers:
             return
         if len(data)!=0:
             print(data)
             data_parse=json.loads(data)
-            r_payload= re.sub(data_parse['username'],username,data)
-            message_receive[data_parse['username']].append(r_payload)
+            if username != data_parse['username'] and data_parse['username'] in listofusers:
+                usernameTo="\""+data_parse['username']+"\""
+                usernameFrom="\""+username+"\""
+                print(usernameFrom, usernameTo)
+                r_payload= re.sub(usernameTo,usernameFrom,data)
+                r_payload = re.sub("&", "&amp", r_payload)
+                r_payload = re.sub("<", "&lt", r_payload)
+                r_payload = re.sub(">", "&gt", r_payload)
+                message_receive[data_parse['username']].append(r_payload)
         else:
             if (len(message_receive[username])!=0):
                 ws.send(message_receive[username].pop(0))
