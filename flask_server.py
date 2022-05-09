@@ -148,7 +148,12 @@ def wsocket(ws):
         if len(data)!=0:
             print(data)
             data_parse=json.loads(data)
-            r_payload= re.sub(data_parse['username'],username,data)
+            usernameTo="\""+data_parse['username']+"\""
+            usernameFrom="\""+username+"\""
+            r_payload= re.sub(usernameTo,usernameFrom,data)
+            r_payload = re.sub("&", "&amp", r_payload)
+            r_payload = re.sub("<", "&lt", r_payload)
+            r_payload = re.sub(">", "&gt", r_payload)
             message_receive[data_parse['username']].append(r_payload)
         else:
             if (len(message_receive[username])!=0):

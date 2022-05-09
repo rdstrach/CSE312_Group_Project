@@ -1,4 +1,5 @@
 // https://bulma.io/documentation/elements/notification/#javascript-example
+/*
 document.addEventListener('DOMContentLoaded', () => {
     (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
         const $notification = $delete.parentNode;
@@ -8,24 +9,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-
+*/
 socket = new WebSocket('ws://' + window.location.host + '/DM_websocket');
-
+var chatmsgId=1;
 function addMessage(chatMessage) {
-    let chat = document.getElementById('chat');
+    let chat = document.getElementById('msg_display');
     // chat.innerHTML += "<b>" + chatMessage['username'] + "</b>: " + chatMessage["message"] + "<br/>";
+    let msgId="msg_"+chatmsgId.toString();
 
-    chat.innerHTML += "<div class=\"notification\"><button class=\"delete\"></button><b>" + chatMessage['username']
+    chat.innerHTML += "<div class=\"notification\" id=\""+msgId+"\"><button class=\"delete\" onclick=\"delete_message("+chatmsgId.toString()+")\"></button><b>" + chatMessage['username']
         + " says:</b><br>" + chatMessage["message"] + "<br><br></div>"
-
+    chatmsgId++;
 }
-
+function delete_message(id){
+let msgId="msg_"+id.toString();
+document.getElementById(msgId).style.display = "none";
+if (id==0){
+document.getElementById("dm_toggle").style.display = "block";
+}
+}
 function show_dm() {
-    let chat = document.getElementById('chat');
+   // let chat = document.getElementById('chat');
+    /*
     chat.innerHTML += "<div class=\"notification\"><button class=\"delete\"></button><b>Send message to:</b><br>" +
         "<input class=\"input\" id=\"chat-username\" type=\"text\" placeholder=\"username\"><br>" +
         "<input class=\"input\" id=\"chat-comment\" type=\"text\" placeholder=\"Message\">" +
-        "<br><br><button onClick=\"sendMessage()\">send</button></div>"
+        "<br><br><button onClick=\"sendMessage()\">send</button></div>"*/
+    document.getElementById("dm_toggle").style.display = "none";
+    document.getElementById("msg_0").style.display = "block";
 }
 
 socket.onmessage = function (ws_message) {
@@ -85,5 +96,7 @@ socket.onopen = function (msg) {
 
 }
 socket.onclose = function () {
+
     console.log("WS connection has been closed")
+    page()
 }
