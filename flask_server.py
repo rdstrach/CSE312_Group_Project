@@ -9,7 +9,7 @@ from flask_sock import Sock
 # import db as database
 import loginregister as usermanagement
 import tm
-
+from flask_sock import Sock
 app = Flask(__name__)
 sock = Sock(app)
 
@@ -122,6 +122,37 @@ def settingsPOST():
     usermanagement.change_password(flask_login.current_user.username , request.form.get("old"), request.form.get("new"), request.form.get("new2"))
     return flask.redirect(flask.url_for('settings'))
 
+'''
+websocket input: {"username":"username sending to","message":"msg being sent"}
+websocket sends to specified users thread the json..so recipient receives the following websocket output.. 
+websocket output: {"username":"username of sender","message"}
+
+
+'''
+message_receive=dict()
+sock = Sock(app)
+@sock.route('/DM_websocket')
+def wsocket(ws):
+    listofusers=usermanagement.logged_in_user_list()
+
+    import re,json
+    global message_receive
+    username=flask_login.current_user.username#need to know what username is creating websocket
+    message_receive.update({username:[]})
+
+
+    while True:
+        data=ws.receive()
+        if not username in listofusers:
+            return
+        if len(data)!=0:
+            print(data)
+            data_parse=json.loads(data)
+            r_payload= re.sub(data_parse['username'],username,data)
+            message_receive[data_parse['username']].append(r_payload)
+        else:
+            if (len(message_receive[username])!=0):
+                ws.send(message_receive[username].pop(0))
 @app.route('/settings')
 @flask_login.login_required
 def settings():
