@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
     <script src="{{ url_for('static', filename= 'script.js') }}"></script>
 </head>
-<body>
+<body onload="page()">
 <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
     <div class="navbar-menu">
         <div class="navbar-end">
@@ -16,19 +16,21 @@
     </div>
 </nav>
 
-<div class="dm">
+<div class="dm" id="chat">
+    <br>
+{#    <div class="notification" id="chat">#}
+{#        <button class="delete"></button>#}
+{#        <b>[username] says:</b><br>#}
+{#        [message]<br><br>#}
+{#        <button>reply</button>#}
+{#    </div>#}
+{##}
     <div class="notification">
         <button class="delete"></button>
-        <b>[username] says:</b><br>
-        [message]<br><br>
-        <button>reply</button>
-    </div>
-
-    <div class="notification">
-        <button class="delete"></button>
-        <b>Send message to [username]:</b><br>
-        <input class="input" type="text" placeholder="Text input"><br><br>
-        <button>send</button>
+        <b>Send message to:</b><br>
+        <input class="input" id="chat-username" type="text" placeholder="username"><br>
+        <input class="input" id="chat-comment" type="text" placeholder="Message"><br><br>
+        <button onclick="sendMessage()">send</button>
     </div>
 </div>
 
@@ -39,9 +41,11 @@
             <h1 class="title is-4 is-spaced">Currently Online:</h1>
             <ul>
                 {% for user in users %}
-                <li><a href="#">{{ user }}</a></li>
+                <li><p>{{ user }}</p></li>
                 {% endfor %}
             </ul>
+        <br><br>
+{#        <button class="button" onclick="show_dm()">Send a DM</button>#}
         </div>
     </div>
 
@@ -90,22 +94,6 @@
         </article>
         {% endfor %}
     </div>
-
-
-
-<!-- JS Script -->
-<script>
-    const socket_upvote = new WebSocket('ws://' + location.host + '/upvote');
-
-    socket_upvote.addEventListener('message', event => {
-        const json_obj = JSON.parse(event.data)
-        document.getElementById('upvotes' + json_obj.id).innerHTML = "Votes: " + json_obj.votes;
-      });
-
-    function upvote_button(tm_id) {
-        socket_upvote.send('{"messageType": "upvote", "id": "' + tm_id + '"}');
-    }          
-</script>
-
+</div>
 </body>
 </html>
