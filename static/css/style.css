@@ -15,3 +15,10 @@
     max-height: 400px;
     width: auto;
 }
+
+.dm {
+    position: fixed;
+    right: 3%;
+    bottom: 3%;
+    z-index:2;
+}
