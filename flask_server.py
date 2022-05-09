@@ -120,6 +120,8 @@ def settingsPOST():
 websocket input: {"username":"username sending to","message":"msg being sent"}
 websocket sends to specified users thread the json..so recipient receives the following websocket output.. 
 websocket output: {"username":"username of sender","message"}
+
+
 '''
 message_receive=dict()
 sock = Sock(app)
