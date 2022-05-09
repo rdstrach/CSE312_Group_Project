@@ -1,8 +1,31 @@
 import sys
-
+from werkzeug.utils import secure_filename
 from db import *
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
+
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+"""
+store user image if allowed and return path, else return default image
+"""
+
+
+def user_image(username, file):
+    profile_stored = f'./static/images/{username}-{secure_filename(file.filename)}'
+    if file.filename != '':
+        if file and allowed_file(file.filename):
+            file.save(profile_stored)
+            return profile_stored
+    return './static/images/kitten.jpg'
+
+
 """
 create_user(first_name,last_name,username,password,password_again)
 Add user data to database
@@ -15,7 +38,7 @@ returns set of string(s), with user error descriptions,
 """
 
 
-def create_user(first_name, last_name, username, password, password_again):
+def create_user(first_name, last_name, username, password, password_again, file):
     data = dict()
     val_ret = set()
     username = str(username).lower()
@@ -34,7 +57,11 @@ def create_user(first_name, last_name, username, password, password_again):
     data["password"] = password_hash
     if len(val_ret) == 0:
         data["id"] = next_id()
+        data["image"] = user_image(username, file)
         account_info.insert_one(data)
+        user = dict()
+        user["username"] = username
+        logged_in_users.insert_one(user)
         return val_ret
     else:
         return val_ret
@@ -187,7 +214,7 @@ def change_password(username, old_password, new_password, new_password_again):
 
 
     myquery= {"username": username}
-    mydoc= account_info.find(myquery)
+    mydoc= account_info.find_one(myquery)
     old_password_in_db= mydoc["password"]
 
     if check_password_hash(old_password_in_db, old_password):
@@ -197,6 +224,16 @@ def change_password(username, old_password, new_password, new_password_again):
     else:
         return False
 
+""" 
+def logged_in_user_list()
+returns a list of all the usernames of people currently logged in, including people that aren't active but are still logged in
+"""
+
+def logged_in_user_list():
+    sety = set()
+    for x in logged_in_users.find():
+        sety.add(x["username"])
+    return sety
 
 def printAll():
     print("starting to print all db entries")

@@ -1,5 +1,4 @@
-from flask_server import db
-from pymongo import MongoClient
+from db import db, get_user_info
 import sys
 import string
 from datetime import datetime
@@ -36,6 +35,10 @@ def returns_tm():
     tm_collection = server[collection_name]
     ret_list = []
     for line in tm_collection.find({}, {"_id": False}):
+        user_info = get_user_info(line['username'])
+        line['image'] = user_info['image']
+        line['firstname'] = user_info['firstname']
+        line['lastname'] = user_info['lastname']
         ret_list.append(line)
     return ret_list
 
