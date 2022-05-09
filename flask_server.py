@@ -178,8 +178,8 @@ def upvote(sock):
         for ws in ws_connections:
             try:
                 ws.send('{"messageType": "upvote", "status": "OK", "id": "' + new_votes[0] + '", "votes": "' + new_votes[1] + '"}')
-            except: # If ConnectionError, remove inactive ws from list
-                ws_connections.remove(ws)
+            except: # If ConnectionError due to inactive ws, pass
+                pass
         tm.prints_tm()
         print(ws_connections)
         sys.stdout.flush()
