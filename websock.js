@@ -1,10 +1,9 @@
-#-----------------------------------
+
 socket = new WebSocket('ws://' + window.location.host + '/DM_websocket');
 socket.onmessage = function (ws_message) {
-    console.log("pay load recieved")
+
     const jsonData = JSON.parse(ws_message.data);
-    console.log("This message received from: "+jsonData.username)
-    console.log("The Message: "+ jsonData.message)
+
 }
 function inputdata(username, comment) {
     socket.send(JSON.stringify({ 'username':username,'message': comment}));
@@ -33,4 +32,3 @@ function page() {
 setInterval(request_data,200)
 }
 
-#----------
