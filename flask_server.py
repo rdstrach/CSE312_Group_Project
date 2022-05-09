@@ -131,12 +131,12 @@ def wsocket(ws):
     global message_receive
     username=flask_login.current_user.username#need to know what username is creating websocket
     message_receive.update({username:[]})
-    print(message_receive.keys())
-    print("\nthread start for user: "+ username)
+
 
     while True:
         data=ws.receive()
-        #if data length is 0 check dictionary for a message
+        if not username in listofusers:
+            return
         if len(data)!=0:
             print(data)
             data_parse=json.loads(data)
