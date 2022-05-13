@@ -1,21 +1,19 @@
 import sys
-
+import os
 import flask
 from flask import Flask, render_template, request, redirect
 import flask_login
-import pymongo
-from pymongo import MongoClient
 from flask_sock import Sock
-# import db as database
 import loginregister as usermanagement
 import tm
-from flask_sock import Sock
+
 app = Flask(__name__)
 sock = Sock(app)
 
 ws_connections = []
 
-app.secret_key = "0000"  # os.environ['SECRET_KEY'] but not working with this value
+# app.secret_key = "0000"  # os.environ['SECRET_KEY'] but not working with this value
+app.secret_key = os.environ['SECRET_KEY']
 app.config['UPLOAD_FOLDER'] = './static/images/'
 login_manager = flask_login.LoginManager()
 login_manager.login_view = 'login'
@@ -36,9 +34,11 @@ def text_messages():
     tm.loads_tm(flask_login.current_user.username, request.form['tm'])
     return redirect('/')
 
+
 @app.route('/login')
 def login():
     return render_template('login.html')
+
 
 @app.route('/login', methods=['POST'])
 def loginPOST():
@@ -88,6 +88,7 @@ def logout():
 
     return flask.redirect(flask.url_for('login'))
 
+
 class User(flask_login.UserMixin):
     def __init__(self, username, active=True):
         self.username = username
@@ -114,14 +115,17 @@ class User(flask_login.UserMixin):
 def load_user(username):
     return User(username, True)
 
+
 @app.route('/settings', methods=['POST'])
 def settingsPOST():
     # x= flask_login.current_user.username
     # print(x)
     # sys.stdout.flush()
     # sys.stderr.flush()
-    usermanagement.change_password(flask_login.current_user.username , request.form.get("old"), request.form.get("new"), request.form.get("new2"))
+    usermanagement.change_password(flask_login.current_user.username, request.form.get("old"), request.form.get("new"),
+                                   request.form.get("new2"))
     return flask.redirect(flask.url_for('settings'))
+
 
 '''
 websocket input: {"username":"username sending to","message":"msg being sent"}
@@ -130,42 +134,45 @@ websocket output: {"username":"username of sender","message"}
 
 
 '''
-message_receive=dict()
-sock = Sock(app)
+message_receive = dict()
+
+
 @sock.route('/DM_websocket')
 def wsocket(ws):
-    listofusers=usermanagement.logged_in_user_list()
+    listofusers = usermanagement.logged_in_user_list()
 
-    import re,json
+    import re, json
     global message_receive
-    username=flask_login.current_user.username#need to know what username is creating websocket
-    message_receive.update({username:[]})
-
+    username = flask_login.current_user.username  # need to know what username is creating websocket
+    message_receive.update({username: []})
 
     while True:
-        data=ws.receive()
+        data = ws.receive()
+        print(data)
         if username not in listofusers:
             return
-        if len(data)!=0:
+        if len(data) != 0:
             print(data)
-            data_parse=json.loads(data)
+            data_parse = json.loads(data)
             if username != data_parse['username'] and data_parse['username'] in listofusers:
-                usernameTo="\""+data_parse['username']+"\""
-                usernameFrom="\""+username+"\""
+                usernameTo = "\"" + data_parse['username'] + "\""
+                usernameFrom = "\"" + username + "\""
                 print(usernameFrom, usernameTo)
-                r_payload= re.sub(usernameTo,usernameFrom,data)
+                r_payload = re.sub(usernameTo, usernameFrom, data)
                 r_payload = re.sub("&", "&amp", r_payload)
                 r_payload = re.sub("<", "&lt", r_payload)
                 r_payload = re.sub(">", "&gt", r_payload)
                 message_receive[data_parse['username']].append(r_payload)
         else:
-            if (len(message_receive[username])!=0):
+            if (len(message_receive[username]) != 0):
                 ws.send(message_receive[username].pop(0))
+
+
 @app.route('/settings')
 @flask_login.login_required
 def settings():
-
     return render_template('settings.html')
+
 
 # Websocket for upvote
 @sock.route('/upvote')
@@ -177,13 +184,16 @@ def upvote(sock):
         # Send to all websocket connections
         for ws in ws_connections:
             try:
-                ws.send('{"messageType": "upvote", "status": "OK", "id": "' + new_votes[0] + '", "votes": "' + new_votes[1] + '"}')
-            except: # If ConnectionError due to inactive ws, pass
+                ws.send(
+                    '{"messageType": "upvote", "status": "OK", "id": "' + new_votes[0] + '", "votes": "' + new_votes[
+                        1] + '"}')
+            except:  # If ConnectionError due to inactive ws, pass
                 pass
         tm.prints_tm()
         print(ws_connections)
         sys.stdout.flush()
         sys.stderr.flush()
+
 
 if __name__ == "__main__":
     Flask.run(app, "0.0.0.0", 5000, True)

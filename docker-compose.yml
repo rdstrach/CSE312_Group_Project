@@ -8,5 +8,6 @@ services:
         build: .
         environment:
             WAIT_HOSTS: mongo:27017
+            SECRET_KEY: randomly_generated_secret_key_here
         ports:
             - '8080:5000'
